@@ -1,26 +1,50 @@
 import React, { useState } from "react";
 
 function QuestionForm(props) {
+  console.log(props);
   const [formData, setFormData] = useState({
     prompt: "",
-    answer1: "",
-    answer2: "",
-    answer3: "",
-    answer4: "",
+    answers: ["", "", "", ""],
     correctIndex: 0,
   });
 
   function handleChange(event) {
+    if (event.target.name === "correctIndex") {
+      handleCorrectAnswerChange(event);
+    } else {
+      
+    
     setFormData({
       ...formData,
       [event.target.name]: event.target.value,
     });
   }
+  }
+
+  function handleCorrectAnswerChange(event) {
+
+    setFormData({
+      ...formData,
+      correctIndex: event.target.value,
+    });
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
-    console.log(formData);
-  }
+    fetch("http://localhost:4000/questions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    })
+    setFormData({
+      prompt: "",
+      answers: ["", "", "", ""],
+     
+      correctIndex: 0,
+  });
+}
 
   return (
     <section>
